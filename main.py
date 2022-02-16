@@ -4,10 +4,6 @@ from urllib.parse import urlparse
 from dotenv import load_dotenv
 import argparse
 
-load_dotenv()
-
-TOKEN = os.environ['CRYSTAL_TOKEN']
-
 
 def shorten_link(headers, long_url):
 
@@ -45,6 +41,10 @@ def is_bitlink(url, headers):
 
 def main():
 
+    load_dotenv()
+
+    token = os.environ['CRYSTAL_TOKEN']
+
     parser = argparse.ArgumentParser()
     parser.add_argument("url", help="Ссылка будет сокращена")
     args = parser.parse_args()
@@ -54,7 +54,7 @@ def main():
     url = url_parse.netloc + url_parse.path
 
     headers = {
-        "Authorization": TOKEN
+        "Authorization": token
     }
 
     if is_bitlink(url, headers):
