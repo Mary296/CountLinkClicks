@@ -1,5 +1,6 @@
 import os
 import requests
+from urllib.parse import urlparse
 from dotenv import load_dotenv
 import argparse
 
@@ -48,7 +49,9 @@ def main():
     parser.add_argument("url", help="Ссылка будет сокращена")
     args = parser.parse_args()
 
-    url = args.url
+    full_url = args.url
+    url_parse = urlparse(full_url)
+    url = url_parse.netloc + url_parse.path
 
     headers = {
         "Authorization": TOKEN
@@ -62,9 +65,10 @@ def main():
 
     else:
         try:
-            print("Битлинк: ", shorten_link(headers, url))
+            print("Битлинк: ", shorten_link(headers, full_url))
         except requests.exceptions.HTTPError:
             print("Ссылка введена неверно")
+
 
 if __name__ == '__main__':
 
