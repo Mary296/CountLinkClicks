@@ -1,11 +1,8 @@
 import os
 import requests
 from dotenv import load_dotenv
+from urllib.parse import urlparse
 import argparse
-
-load_dotenv()
-
-TOKEN = os.environ['CRYSTAL_TOKEN']
 
 
 def shorten_link(headers, long_url):
@@ -43,15 +40,20 @@ def is_bitlink(url, headers):
 
 
 def main():
+    load_dotenv()
+
+    token = os.environ['BITLY_TOKEN']
 
     parser = argparse.ArgumentParser()
     parser.add_argument("url", help="Ссылка будет сокращена")
     args = parser.parse_args()
 
-    url = args.url
+    full_url = args.url
+    url_parse = urlparse(full_url)
+    url = url_parse.netloc + url_parse.path
 
     headers = {
-        "Authorization": TOKEN
+        "Authorization": token
     }
 
     if is_bitlink(url, headers):
@@ -62,9 +64,10 @@ def main():
 
     else:
         try:
-            print("Битлинк: ", shorten_link(headers, url))
+            print("Битлинк: ", shorten_link(headers, full_url))
         except requests.exceptions.HTTPError:
             print("Ссылка введена неверно")
+
 
 if __name__ == '__main__':
 
